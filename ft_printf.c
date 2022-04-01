@@ -6,7 +6,7 @@
 /*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 15:23:57 by iamongeo          #+#    #+#             */
-/*   Updated: 2022/03/31 21:56:17 by iamongeo         ###   ########.fr       */
+/*   Updated: 2022/03/31 22:23:01 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,14 @@ static int	count_flags(const char *fmt)
 static int	print_hexa(unsigned int x, int use_upper)
 {
 	if (use_upper)
-		return (ft_putX_count(x));
-//		return (ft_putnbr_base_count(x, HEX_BASE_UPPERCASE));
+		return (ft_putupperx_count(x));
 	else
-		return (ft_putx_count(x));
-//		return (ft_putnbr_base_count(x, HEX_BASE_LOWERCASE));
+		return (ft_putlowerx_count(x));
 }
 
 static int	print_pointer(size_t p)
 {
 	write(1, "0x", 2);
-//	return (ft_putnbr_base_pad(p, HEX_BASE_LOWERCASE, 8));
-//	return (ft_putnbr_base_count(p, HEX_BASE_LOWERCASE));
 	return (2 + ft_putptr_count(p));
 }
 
