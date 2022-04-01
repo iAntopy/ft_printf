@@ -1,13 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-void	ft_putnbr_base_pad(int nb, char *base, short int zpad);
+#include "ft_printf.h"
 
 int	main(int argc, char *argv[])
 {
+	int	ret;
+
 	if (argc > 2)
 	{
-		ft_putnbr_base_pad(atoi(argv[1]), "0123456789", atoi(argv[2]));
+		ret = ft_putnbr_base_pad(ft_atoi(argv[1]), "0123456789abcdef", ft_atoi(argv[2]));
+		ft_putstr("\nft_putnbr_base_pad return value : ");
+		ft_putnbr(ret);
 	}
 	return (0);
 }

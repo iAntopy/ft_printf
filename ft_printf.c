@@ -1,77 +1,85 @@
-#include <stdarg.h>
-#include <stdio.h>
-#include "libft.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iamongeo <marvin@42quebec.com>             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 15:23:57 by iamongeo          #+#    #+#             */
+/*   Updated: 2022/03/31 21:56:17 by iamongeo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	ft_putnbr_base(int nbr, char *base);
-void	ft_putnbr_base_pad(unsigned long long int nbr, char *base, int zpad);
+#include "ft_printf.h"
 
 static int	count_flags(const char *fmt)
 {
 	int	nb_args;
 
+	nb_args = 0;
 	while (*fmt)
 		if (*(fmt++) == '%')
 			nb_args++;
 	return (nb_args);
 }
 
-static void	print_hexa(unsigned int x, int use_upper)
+static int	print_hexa(unsigned int x, int use_upper)
 {
-	ft_putstr("0x");
 	if (use_upper)
-		ft_putnbr_base((int)x, "0123456789ABCDEF");
+		return (ft_putX_count(x));
+//		return (ft_putnbr_base_count(x, HEX_BASE_UPPERCASE));
 	else
-		ft_putnbr_base((int)x, "0123456789abcdef");
+		return (ft_putx_count(x));
+//		return (ft_putnbr_base_count(x, HEX_BASE_LOWERCASE));
 }
 
-static void	print_pointer(unsigned long long int p)
+static int	print_pointer(size_t p)
 {
 	write(1, "0x", 2);
-	ft_putnbr_base_pad(p, "0123456789abcdef", 8);
+//	return (ft_putnbr_base_pad(p, HEX_BASE_LOWERCASE, 8));
+//	return (ft_putnbr_base_count(p, HEX_BASE_LOWERCASE));
+	return (2 + ft_putptr_count(p));
 }
 
-static int	print_flag(const char *fptr, va_list vlst)
+static int	print_flag(const char *fptr, va_list *vlst)
 {
 	char	flag;
 
 	flag = *fptr;
 	if (flag == 'c')
-		ft_putchar(va_arg(vlst, int));
+		return (ft_putchar_count((int)va_arg(*vlst, int)));
 	else if (flag == 's')
-		ft_putstr(va_arg(vlst, char *));
+		return (ft_putstr_count((char *)va_arg(*vlst, char *)));
 	else if (flag == 'p')
-		print_pointer(va_arg(vlst, unsigned long long int));
+		return (print_pointer((size_t)va_arg(*vlst, size_t)));
 	else if (flag == 'd')
-		ft_putnbr(va_arg(vlst, int));
+		return (ft_putnbr_count((int)va_arg(*vlst, int)));
 	else if (flag == 'i')
-		ft_putnbr(va_arg(vlst, int));
+		return (ft_putnbr_count((int)va_arg(*vlst, int)));
 	else if (flag == 'u')
-		ft_putnbr(va_arg(vlst, unsigned int));
+		return (ft_putuint_count((unsigned int)va_arg(*vlst, unsigned int)));
 	else if (flag == 'x')
-		print_hexa(va_arg(vlst, unsigned int), 0);
+		return (print_hexa((unsigned int)va_arg(*vlst, unsigned int), 0));
 	else if (flag == 'X')
-		print_hexa(va_arg(vlst, unsigned int), 1);
+		return (print_hexa((unsigned int)va_arg(*vlst, unsigned int), 1));
 	else if (flag == '%')
-		ft_putchar('%');
+		return (ft_putchar_count('%'));
 	return (0);
 }
 
-int ft_printf(const char *fmt, ...)
+int	ft_printf(const char *fmt, ...)
 {
-	int	nb_args;
+	int		nb_args;
 	va_list	vlst;
-	int	nb_wchars;
+	int		nb_wchars;
 
 	nb_wchars = 0;
 	nb_args = count_flags(fmt);
-	ft_putstr("nb_args : ");
-	ft_putnbr(nb_args);
-	write(1, "\n", 1);
 	va_start(vlst, fmt);
 	while (*fmt)
 	{
 		if (*fmt == '%')
-			nb_wchars += print_flag(++fmt, vlst);
+			nb_wchars += print_flag(++fmt, &vlst);
 		else
 		{
 			ft_putchar(*fmt);
@@ -82,4 +90,3 @@ int ft_printf(const char *fmt, ...)
 	va_end(vlst);
 	return (nb_wchars);
 }
-
